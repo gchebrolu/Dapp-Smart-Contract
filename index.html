@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Smart Contract</title>
+
+    <!-- Bootstrap -->
+    <link href="src/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="src/js/bootstrap.min.js"></script>
+    <script src="src/js/web3.min.js"></script>
+
+    <script src="src/js/app.js"></script>
+    <style>
+        table#payeeListTable td,
+        th {
+            padding: 10px 9px 7px 24px;;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h1 {
+            background-color: #1e5675;
+            color: white;
+            padding: 10px;
+        }
+        .labelHeader {
+            background-color: #508ca9;
+            color: white;
+            font-weight: bold;
+            padding: 2px;
+            text-transform: uppercase;
+            font-family: sans-serif;
+            font-size: small;
+        }
+        input:read-only { 
+            background-color: #fbfbf6;
+            font-size: small;
+        }
+        .button:hover {
+            background-color: gray !important;
+            color: white;
+        }
+        table#payeeListTable tbody {
+            height: 228px;
+            display: inline-block;
+            overflow-y:scroll;
+        }
+        .tdh {
+	cursor: pointer;
+}
+    </style>
+<div id="mainDiv">
+    <h1 style="margin-left: 80px;">Scheduled Payments Contract</h1>
+    </br>
+                <label style="margin-right: 100px;text-align:right;display:block;"><span>Network:</span>
+                <label id="networkLabel" style="color:red;"></label></label>
+                <label style="margin-left: 100px;">Contract Address:</label>
+                <label id="contractAddressLabel" style="color:green;"></label>
+                </br>
+                <label style="margin-left: 100px;">Available Balance:</label>
+                <label id="availableBalanceLabel" style="color:green;"></label>
+                </br>
+                <label style="margin-left: 100px;">Required Balance:</label>
+                <label id="requiredBalanceLabel" style="color:green;"></label>
+                </br>
+    <table>
+        <img id="loader" style=" position: absolute;top: 50%;left: 50%; width: 120px;height: 120px;transform: translateX(-50%) translateY(-50%);" src="https://loading.io/spinners/double-ring/lg.double-ring-spinner.gif">
+        <tr>
+            <td>
+                <div id="addPayeeDiv" style="margin-left: 80px;margin-top: 20px;margin-right: 40px;">
+                    <label class="labelHeader">Add New Scheduled Payment</label>
+                    </br>
+                    <label>To Address</label>
+                    </br>
+                    <input id="addPayeeToAddressTextBox" type="text" style="width: 330px;">
+                    </br>
+                    <label>Amount in Ether</label>
+                    </br>
+                    <input id="addPayeeAmountTextBox" type="number">
+                    </br>
+                    <label>Date</label>
+                    </br>
+                    <input id="addPayeeDateTextBox" type="date">
+                    </br>
+                    <input id="AddPayeeButton" class="button" type="button" value="Add Payee" style="margin-top: 8px;margin-right: 8px;" onclick="AddPayeeOnClick();">
+                    <input id="ShowPayee" type="button" class="button" value="Update Payee's List" onclick="ShowPayeeOnClick();">
+                </div>
+            </td>
+            <td>
+                <div id="loadAmountDiv" style="margin-right: 40px;margin-left:40px;">
+                    <label class="labelHeader">Load Funds To Contract</label>
+                    </br>
+                    <label>From Address</label>
+                    </br>
+                    <input id="loadAmountFromAddressTextBox" type="text" style="width: 330px;" readonly>
+                    </br>
+                    <label>Amount in Ether</label>
+                    </br>
+                    <input id="loadAmountAmountTextBox" type="number">
+                    </br>
+                    <input type="button" class="button" value="Load Amount" style="margin-top: 8px;" onclick="LoadAmountOnClick();">
+                </div>
+            </td>
+            <td>
+                <div id="checkBalanceDiv" style="margin-left:40px;">
+                    <label class="labelHeader">Check Balance</label>
+                    </br>
+                    <label>Address</label>
+                    </br>
+                    <input id="checkBalanceAddressTextBox" type="text" style="width: 330px;">
+                    </br>
+                    <label>Available Balance:</label>
+
+                    <label id="checkBalanceAmountTextBox">Ether</label>
+                    </br>
+                    <input id="checkBalanceButton" type="button" class="button" value="Show Balance" style="margin-top: 15px;" onclick="CheckBalanceOnClick();">
+                </div>
+            </td>
+        </tr>
+            </table>
+<table>
+        <tr>
+            <td>
+                <div id="instantTransferDiv" style="margin-left: 80px;margin-top: 70px;">
+                   <label class="labelHeader">Instant Transfer</label>
+                    </br>
+                    <label>From Address</label>
+                    </br>
+                    <input id="instantTransferFromAddressTextBox" type="text" style="width: 330px;" readonly>
+                    </br>
+                    <label>To Address</label>
+                    </br>
+                    <input id="instantTransferToAddressTextBox" type="text" style="width: 330px;">
+                    </br>
+                    <label>Amount in Ether</label>
+                    </br>
+                    <input id="instantTransferAmountTextBox" type="number">
+                    </br>
+                    <input id="instantTransferButton" type="button" class="button" value="Transfer" style="margin-top: 8px;" onclick="InstantTransferOnClick();"> 
+                </div>
+            </td>
+<td>
+    <div id="payeeListDiv" style="display:none;margin-left:80px;margin-top:30px;">
+        <label class="labelHeader">Scheduled Payments List</label>
+        </br>
+        <table id="payeeListTable" style="background-color: #F5F5F4;">
+        </table>
+        <input id="Execute" type="button" class="button" style="margin-top: 20px" value="Execute Pending Transactions" onclick="ExecuteTransactionsOnClick();">
+    </div>
+</td>
+</tr>
+</table>
+</div>
+
+</body>
+
+</html>
